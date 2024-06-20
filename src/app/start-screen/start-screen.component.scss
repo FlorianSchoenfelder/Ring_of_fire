@@ -1,0 +1,47 @@
+.startScreen {
+  height: 100vh;
+  width: 100vw;
+  max-width: 100%;
+  background-image: url(./../../assets/img/board.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+
+  .headlingImg {
+    height: 150px;
+    width: 650px;
+  }
+
+  .custom-button {
+    position: absolute;
+    padding: 15px 40px;
+    font-size: 20px;
+    color: #fff;
+    background: linear-gradient(45deg, #525252, #2c2c2c);
+    border: 2px solid #fff;
+    border-radius: 10px;
+    box-shadow: 2px 4px 9px rgba(0, 0, 0, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    &:hover {
+      background: linear-gradient(45deg, #333, #000);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.5);
+      transform: translateY(-2px);
+    }
+    &:active {
+      transform: translateY(2px);
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+    }
+  }
+}
+
+.startScreenImg {
+  height: 70vh;
+}

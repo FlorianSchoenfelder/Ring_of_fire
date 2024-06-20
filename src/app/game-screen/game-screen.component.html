@@ -1,0 +1,11 @@
+<div class="gameScreen">
+    <div class="card-stack">
+        @for (item of [0,1,2,3]; track item; let i = $index) {
+            <img [ngStyle]="{'right.px': i * 10}" src="./../../assets/img/cards/card_cover.png">
+        }
+        <img (click)="takeCard()" class="top-card" style="right: 40px;" src="./../../assets/img/cards/card_cover.png">
+        <img (click)="takeCard()" *ngIf="pickCardAnimation" class="pick-card no-border pickCardAnimation" style="right: 40px;" src="./../../assets/img/cards/ace/ace_1.png">
+
+        
+    </div>
+</div>
