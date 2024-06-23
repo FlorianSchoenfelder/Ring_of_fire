@@ -10,6 +10,9 @@ import { Router } from '@angular/router';
   styleUrl: './start-screen.component.scss'
 })
 export class StartScreenComponent {
+
+
+
   constructor(private router: Router) {
 
   }

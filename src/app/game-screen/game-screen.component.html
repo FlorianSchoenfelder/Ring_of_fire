@@ -1,11 +1,20 @@
 <div class="gameScreen">
     <div class="card-stack">
-        @for (item of [0,1,2,3]; track item; let i = $index) {
-            <img [ngStyle]="{'right.px': i * 10}" src="./../../assets/img/cards/card_cover.png">
-        }
-        <img (click)="takeCard()" class="top-card" style="right: 40px;" src="./../../assets/img/cards/card_cover.png">
-        <img (click)="takeCard()" *ngIf="pickCardAnimation" class="pick-card no-border pickCardAnimation" style="right: 40px;" src="./../../assets/img/cards/ace/ace_1.png">
 
-        
+        <!-- Card stack-->
+        <img *ngFor="let item of [0,1,2,3]; let i = index;" [ngStyle]="{'right.px': i * 10}"
+            src="./../../assets/img/cards/card_cover.png">
+
+        <img (click)="takeCard()" class="top-card" style="right: 40px;" src="./../../assets/img/cards/card_cover.png">
+
+        <!-- Stack for played cards-->
+        <img *ngFor="let card of game.playedCards" style="right: 40px;" class="played-card"
+            src="./../../assets/img/cards/{{ currentSymbol }}/{{ currentCard }}.png" alt="">
+
+        <!-- Current card (Animation)-->
+        <img *ngIf="pickCardAnimation" class="pick-card no-border" style="right: 40px;"
+            src="./../../assets/img/cards/{{ currentSymbol }}/{{ currentCard }}.png">
+
+
     </div>
 </div>
