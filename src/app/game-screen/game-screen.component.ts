@@ -14,6 +14,8 @@ export class GameScreenComponent {
   currentCard: string = '';
   public game: Game = new Game();
   currentSymbol: string = '';
+  placedCard: string = '';
+  placedCardSymbol: string = '';
 
   constructor() {
     this.init();
@@ -26,21 +28,22 @@ export class GameScreenComponent {
 
   takeCard() {
     if (!this.pickCardAnimation) {
-      const lastCard = this.game.stack.pop();
+      let lastCard = this.game.stack.pop();
       if (!lastCard) {
         return; // Funktion beendet
       }
       this.pickCardAnimation = true;
       this.currentCard = lastCard;
       this.splitCardName();
+      console.log('New card: ' + this.currentCard);
+      console.log('Game is:', this.game);
+      
+      
   
       setTimeout(() => {
         this.game.playedCards.push(this.currentCard);
-        console.log(this.game.playedCards);
-        
         this.pickCardAnimation = false;
-        console.log(this.pickCardAnimation);
-        
+        // console.log(this.pickCardAnimation);
       }, 1250);
     }
 
@@ -48,7 +51,12 @@ export class GameScreenComponent {
 
   splitCardName() {
     let parts = this.currentCard.split('_');
-    // console.log(parts);
     this.currentSymbol = parts[0];
+  }
+
+  getCardImage(card: string) {
+    let parts = card.split('_');
+    this.placedCardSymbol = parts[0];
+    return `./assets/img/cards/${this.placedCardSymbol}/${card}.png`
   }
 }
