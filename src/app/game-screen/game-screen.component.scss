@@ -9,15 +9,15 @@
 
 .informations {
   position: absolute;
-  bottom: 80px;
+  bottom: 60px;
   left: 100px;
   right: 160px;
 }
 
 .btn-add {
   position: absolute;
-  bottom: 80px;
-  right: 80px;
+  bottom: 60px;
+  right: 40px;
 }
 
 .gameScreen {
@@ -87,5 +87,84 @@
     
     transform:rotate(-5deg) scale(1) translateX(240px) translateY(-200px);
     
+  }
+}
+
+.informationBox {
+  padding: 16px;
+  margin: 16px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 700px) {
+  .informations {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    // height: 170px !important;
+  }
+
+  .card-stack {
+    height: 350px;
+    top: 150px;
+    img {
+      position: absolute;
+      height: 150px;
+      width: 100px;
+      border: 2px solid;
+      border-radius: 24px;
+    }
+  }
+
+  .played-card {
+    transform:rotate(-5deg) scale(1) translateX(180px) translateY(-180px);
+  }
+
+  .pick-card {
+    transition: all 0.25s;
+    animation: pick-card-animationMobile 1.25s ease-in-out;
+    transform:rotate(-5deg) scale(1) translateX(180px) translateY(-180px);
+  }
+
+  @keyframes pick-card-animationMobile {
+    0% {
+      transform:rotate(-5deg) scale(1.1);
+    }
+    
+    40% {
+      transform:rotate(-5deg) scale(1.3);
+    }
+    
+    50% {
+      transform:rotate(-5deg) scale(1.3);
+    }
+    80%{
+      transform:rotate(-5deg) scale(1.3);
+    }
+    100% {
+      
+      transform:rotate(-5deg) scale(1) translateX(180px) translateY(-180px) !important;
+      
+    }
+  }
+
+  .btn-add {
+    position: absolute;
+    bottom: 45px;
+    right: 20px;
+  }
+
+  .player-container {
+    position: absolute;
+    top: 8px;
+  }
+
+  .player-screen-container {
+    height: 250px;
+    width: 100%;
+    overflow-y: auto;
+    position: absolute;
   }
 }

@@ -1,0 +1,20 @@
+@media (max-width: 700px) {
+  
+    .informationBox {
+     height: 160px;
+    } 
+  
+    .mat-mdc-card-title {
+      height: 50px !important;
+      padding: 8px 16px;
+    }
+
+    .mat-mdc-card-content {
+        width: 77%;
+        overflow-y: auto;
+    }
+  
+    
+    
+  }
+

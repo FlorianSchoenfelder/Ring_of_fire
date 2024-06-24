@@ -57,7 +57,7 @@ export class GameScreenComponent {
   }
 
   takeCard() {
-    if (this.game.players.length == 0) {
+    if (this.game.players.length <= 1) {
       this.openDialog();
     }
     else{
@@ -78,8 +78,6 @@ export class GameScreenComponent {
       }, 1250);
     }
     }
-    
-
   }
 
   splitCardName() {
@@ -102,5 +100,14 @@ export class GameScreenComponent {
       }
       this.game.players.push(name);
     });
+  }
+
+
+  getTopPosition(index: number): string {
+    if (window.innerWidth < 700) {
+      return `${8 + (index * 55)}px`;
+    } else {
+      return `${130 + (index * 80)}px`;
+    }
   }
 }

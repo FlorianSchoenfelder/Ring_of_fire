@@ -1,7 +1,9 @@
-<app-player-screen *ngFor="let player of game.players; let i = index" class="player-container"
-    [ngStyle]="{'top.px': 130 + (i * 80)}"
-    [playerActive]="i == game.currentPlayer"
-    [name]="player"></app-player-screen>
+<div class="player-screen-container">
+    <app-player-screen *ngFor="let player of game.players; let i = index" class="player-container"
+        [ngStyle]="{'top': getTopPosition(i)}" [playerActive]="i == game.currentPlayer"
+        [name]="player"></app-player-screen>
+</div>
+
 
 
 <div class="gameScreen">
@@ -27,9 +29,8 @@
 
     <app-game-informations [card]="currentCard" class="informations"></app-game-informations>
 
-    <button (click)="openDialog()" class="btn-add" mat-fab color="primary" aria-label="Example icon button with a delete icon">
-    <mat-icon>add</mat-icon>
-  </button>
+    <button (click)="openDialog()" class="btn-add" mat-fab color="primary"
+        aria-label="Example icon button with a delete icon">
+        <mat-icon>add</mat-icon>
+    </button>
 </div>
-
-
