@@ -2,6 +2,24 @@
   border: none !important;
 }
 
+.player-container {
+  position: absolute;
+  right: 0;
+}
+
+.informations {
+  position: absolute;
+  bottom: 80px;
+  left: 100px;
+  right: 160px;
+}
+
+.btn-add {
+  position: absolute;
+  bottom: 80px;
+  right: 80px;
+}
+
 .gameScreen {
   height: 100vh;
   width: 100vw;

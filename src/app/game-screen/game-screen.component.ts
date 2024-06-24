@@ -1,11 +1,40 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Game } from '../models/game';
+import { PlayerScreenComponent } from '../player-screen/player-screen.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import {
+  MatDialog,
+  MatDialogActions,
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogModule,
+  MatDialogTitle,
+} from '@angular/material/dialog';
+import { DialogAddPlayerComponent } from '../dialog-add-player/dialog-add-player.component';
+import { GameInformationsComponent } from '../game-informations/game-informations.component';
 
 @Component({
   selector: 'app-game-screen',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PlayerScreenComponent,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MatButtonModule,
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose,
+    MatIconModule,
+    MatDialogModule,
+    GameInformationsComponent
+  ],
   templateUrl: './game-screen.component.html',
   styleUrl: './game-screen.component.scss'
 })
@@ -16,8 +45,9 @@ export class GameScreenComponent {
   currentSymbol: string = '';
   placedCard: string = '';
   placedCardSymbol: string = '';
+  
 
-  constructor() {
+  constructor(private dialog: MatDialog) {
     this.init();
   }
 
@@ -27,7 +57,11 @@ export class GameScreenComponent {
   }
 
   takeCard() {
-    if (!this.pickCardAnimation) {
+    if (this.game.players.length == 0) {
+      this.openDialog();
+    }
+    else{
+      if (!this.pickCardAnimation) {
       let lastCard = this.game.stack.pop();
       if (!lastCard) {
         return; // Funktion beendet
@@ -35,17 +69,16 @@ export class GameScreenComponent {
       this.pickCardAnimation = true;
       this.currentCard = lastCard;
       this.splitCardName();
-      console.log('New card: ' + this.currentCard);
-      console.log('Game is:', this.game);
-      
-      
-  
+
+      this.game.currentPlayer++;
+      this.game.currentPlayer = this.game.currentPlayer % this.game.players.length;
       setTimeout(() => {
         this.game.playedCards.push(this.currentCard);
         this.pickCardAnimation = false;
-        // console.log(this.pickCardAnimation);
       }, 1250);
     }
+    }
+    
 
   }
 
@@ -58,5 +91,16 @@ export class GameScreenComponent {
     let parts = card.split('_');
     this.placedCardSymbol = parts[0];
     return `./assets/img/cards/${this.placedCardSymbol}/${card}.png`
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(DialogAddPlayerComponent);
+
+    dialogRef.afterClosed().subscribe(name => {
+      if (!name) {
+        return;
+      }
+      this.game.players.push(name);
+    });
   }
 }
