@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
 import { Game } from '../models/game';
 import { PlayerScreenComponent } from '../player-screen/player-screen.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,6 +18,8 @@ import {
 } from '@angular/material/dialog';
 import { DialogAddPlayerComponent } from '../dialog-add-player/dialog-add-player.component';
 import { GameInformationsComponent } from '../game-informations/game-informations.component';
+import { AppComponent } from '../app.component';
+import { collection } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-game-screen',
@@ -38,6 +40,11 @@ import { GameInformationsComponent } from '../game-informations/game-information
   templateUrl: './game-screen.component.html',
   styleUrl: './game-screen.component.scss'
 })
+
+@Injectable({
+  providedIn: 'root',
+})
+
 export class GameScreenComponent {
   pickCardAnimation = false;
   currentCard: string = '';
@@ -52,8 +59,7 @@ export class GameScreenComponent {
   }
 
   init() {
-    this.game = new Game();
-    console.log(this.game);
+    this.game = new Game();   
   }
 
   takeCard() {
