@@ -31,13 +31,20 @@ export class AppComponent {
     appId: "1:473679845887:web:00398626716a705effafca"
   };
 
+  // snapshotRef;
+
   constructor(private GameComponent: GameScreenComponent) {
 
   }
 
+  // ngOnDestroy(): void {
+  //   // this.snapshotRef();
+  // }
+
   ngOnInit(): void {
     console.log(this.GameComponent.game);
-    onSnapshot(this.getGameRef(), (list) => {
+    // this.snapshotRef =
+     onSnapshot(this.getGameRef(), (list) => {
       list.forEach(element => {
         console.log(element.data());
       });
