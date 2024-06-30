@@ -19,7 +19,9 @@ import {
 import { DialogAddPlayerComponent } from '../dialog-add-player/dialog-add-player.component';
 import { GameInformationsComponent } from '../game-informations/game-informations.component';
 import { AppComponent } from '../app.component';
-import { collection } from '@angular/fire/firestore';
+import { addDoc, collection, doc, onSnapshot } from '@angular/fire/firestore';
+import { ActivatedRoute } from '@angular/router';
+import { __param } from 'tslib';
 
 @Component({
   selector: 'app-game-screen',
@@ -52,37 +54,90 @@ export class GameScreenComponent {
   currentSymbol: string = '';
   placedCard: string = '';
   placedCardSymbol: string = '';
-  
 
-  constructor(private dialog: MatDialog) {
+
+  constructor(private dialog: MatDialog, private fireBase: AppComponent, private route: ActivatedRoute) {
+    // this.init();
+  }
+
+
+
+
+  ngOnDestroy(): void {
+    this.getGameSnapshot();
+  }
+
+  ngOnInit(): void {
     this.init();
+    // this.getGameRef();
+    // this.addItem();
+    // console.log(this.game);
+    // this.getGameSnapshot();
+    this.route.params.subscribe((params) => {
+      console.log('Params : ', params['id']); // Korrekte Syntax zum Zugriff auf den Parameter 'id'
+      this.addItem();
+    });
+    // this.route.params
+    
   }
 
   init() {
-    this.game = new Game();   
+    this.game = new Game();
+    // this.addItem();
   }
+
+  getGameSnapshot() {
+    return onSnapshot(this.getGameRef(), (list) => {
+      list.forEach(element => {
+        console.log(element.data());
+      });
+    });
+  }
+
+  getGameRef() {
+    return collection(this.fireBase.firestore, 'games');
+  }
+
+  async addItem() {
+    if (!this.game) {
+      return
+    }
+    const docRef = await addDoc(this.getGameRef(), this.game.toJson());
+    console.log("Document written with ID: ", docRef.id);
+
+
+
+  }
+
+
+
+
+
+
+
+
 
   takeCard() {
     if (this.game.players.length <= 1) {
       this.openDialog();
     }
-    else{
+    else {
       if (!this.pickCardAnimation) {
-      let lastCard = this.game.stack.pop();
-      if (!lastCard) {
-        return; // Funktion beendet
-      }
-      this.pickCardAnimation = true;
-      this.currentCard = lastCard;
-      this.splitCardName();
+        let lastCard = this.game.stack.pop();
+        if (!lastCard) {
+          return; // Funktion beendet
+        }
+        this.pickCardAnimation = true;
+        this.currentCard = lastCard;
+        this.splitCardName();
 
-      this.game.currentPlayer++;
-      this.game.currentPlayer = this.game.currentPlayer % this.game.players.length;
-      setTimeout(() => {
-        this.game.playedCards.push(this.currentCard);
-        this.pickCardAnimation = false;
-      }, 1250);
-    }
+        this.game.currentPlayer++;
+        this.game.currentPlayer = this.game.currentPlayer % this.game.players.length;
+        setTimeout(() => {
+          this.game.playedCards.push(this.currentCard);
+          this.pickCardAnimation = false;
+        }, 1250);
+      }
     }
   }
 

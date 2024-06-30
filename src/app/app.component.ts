@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, Injectable, inject } from '@angular/core';
-import { Firestore, addDoc, onSnapshot } from '@angular/fire/firestore';
-import { RouterOutlet } from '@angular/router';
+import { Firestore, onSnapshot } from '@angular/fire/firestore';
+import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { GameScreenComponent } from './game-screen/game-screen.component';
-import { collection } from '@angular/fire/firestore';
+// import { collection } from '@angular/fire/firestore';
+import { collection, addDoc } from "firebase/firestore"; 
 
 @Component({
   selector: 'app-root',
@@ -31,36 +32,11 @@ export class AppComponent {
     appId: "1:473679845887:web:00398626716a705effafca"
   };
 
-  // snapshotRef;
+  
 
-  constructor(private GameComponent: GameScreenComponent) {
-
+  constructor() {
+    
   }
 
-  // ngOnDestroy(): void {
-  //   // this.snapshotRef();
-  // }
-
-  ngOnInit(): void {
-    console.log(this.GameComponent.game);
-    // this.snapshotRef =
-     onSnapshot(this.getGameRef(), (list) => {
-      list.forEach(element => {
-        console.log(element.data());
-      });
-    });
-
-    this.addItem({ 'Hello': 'Hello' })
-  }
-
-  getGameRef() {
-    return collection(this.firestore, 'games');
-  }
-
-  async addItem(item: {}) {
-    if (!this.GameComponent.game) {
-      return
-    } 
-    // await this.addDoc(this.getGameRef(),item);
-  }
+ 
 }
