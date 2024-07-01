@@ -21,7 +21,6 @@ import { GameInformationsComponent } from '../game-informations/game-information
 import { AppComponent } from '../app.component';
 import { addDoc, collection, doc, onSnapshot } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
-import { __param } from 'tslib';
 
 @Component({
   selector: 'app-game-screen',
@@ -56,66 +55,9 @@ export class GameScreenComponent {
   placedCardSymbol: string = '';
 
 
-  constructor(private dialog: MatDialog, private fireBase: AppComponent, private route: ActivatedRoute) {
+  constructor(private dialog: MatDialog, private route: ActivatedRoute) {
     // this.init();
   }
-
-
-
-
-  ngOnDestroy(): void {
-    this.getGameSnapshot();
-  }
-
-  ngOnInit(): void {
-    this.init();
-    // this.getGameRef();
-    // this.addItem();
-    // console.log(this.game);
-    // this.getGameSnapshot();
-    this.route.params.subscribe((params) => {
-      console.log('Params : ', params['id']); // Korrekte Syntax zum Zugriff auf den Parameter 'id'
-      this.addItem();
-    });
-    // this.route.params
-    
-  }
-
-  init() {
-    this.game = new Game();
-    // this.addItem();
-  }
-
-  getGameSnapshot() {
-    return onSnapshot(this.getGameRef(), (list) => {
-      list.forEach(element => {
-        console.log(element.data());
-      });
-    });
-  }
-
-  getGameRef() {
-    return collection(this.fireBase.firestore, 'games');
-  }
-
-  async addItem() {
-    if (!this.game) {
-      return
-    }
-    const docRef = await addDoc(this.getGameRef(), this.game.toJson());
-    console.log("Document written with ID: ", docRef.id);
-
-
-
-  }
-
-
-
-
-
-
-
-
 
   takeCard() {
     if (this.game.players.length <= 1) {

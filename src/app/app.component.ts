@@ -20,7 +20,7 @@ import { collection, addDoc } from "firebase/firestore";
 
 export class AppComponent {
 
-  firestore: Firestore = inject(Firestore);
+  
   title = 'ringoffire';
 
   firebaseConfig = {
