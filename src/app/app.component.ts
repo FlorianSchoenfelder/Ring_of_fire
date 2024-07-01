@@ -6,6 +6,10 @@ import { GameScreenComponent } from './game-screen/game-screen.component';
 // import { collection } from '@angular/fire/firestore';
 import { collection, addDoc } from "firebase/firestore"; 
 
+@Injectable({
+  providedIn: 'root'
+})
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -23,14 +27,7 @@ export class AppComponent {
   
   title = 'ringoffire';
 
-  firebaseConfig = {
-    apiKey: "AIzaSyBwROdp_C6WT7L1_A1lZWMlIZZdo2DHbjQ",
-    authDomain: "ring-of-fire-550d8.firebaseapp.com",
-    projectId: "ring-of-fire-550d8",
-    storageBucket: "ring-of-fire-550d8.appspot.com",
-    messagingSenderId: "473679845887",
-    appId: "1:473679845887:web:00398626716a705effafca"
-  };
+  
 
   
 

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Injectable } from '@angular/core';
+import { Component, Injectable, inject } from '@angular/core';
 import { Game } from '../models/game';
 import { PlayerScreenComponent } from '../player-screen/player-screen.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,13 +19,16 @@ import {
 import { DialogAddPlayerComponent } from '../dialog-add-player/dialog-add-player.component';
 import { GameInformationsComponent } from '../game-informations/game-informations.component';
 import { AppComponent } from '../app.component';
-import { addDoc, collection, doc, onSnapshot } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, doc, onSnapshot } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
+import { retry } from 'rxjs';
+import { StartScreenComponent } from '../start-screen/start-screen.component';
 
 @Component({
   selector: 'app-game-screen',
   standalone: true,
-  imports: [CommonModule, PlayerScreenComponent,
+  imports: [CommonModule,AppComponent,
+    PlayerScreenComponent,
     MatFormFieldModule,
     MatInputModule,
     FormsModule,
@@ -36,7 +39,8 @@ import { ActivatedRoute } from '@angular/router';
     MatDialogClose,
     MatIconModule,
     MatDialogModule,
-    GameInformationsComponent
+    GameInformationsComponent,
+    StartScreenComponent
   ],
   templateUrl: './game-screen.component.html',
   styleUrl: './game-screen.component.scss'
@@ -53,11 +57,35 @@ export class GameScreenComponent {
   currentSymbol: string = '';
   placedCard: string = '';
   placedCardSymbol: string = '';
+  firestore: Firestore = inject(Firestore);
+  id:string = '';
 
-
-  constructor(private dialog: MatDialog, private route: ActivatedRoute) {
+  constructor( private dialog: MatDialog, private route: ActivatedRoute, private startScreen: StartScreenComponent) {
     // this.init();
   }
+
+  async ngOnInit() {
+    await this.getDocId();
+    console.log(this.id);
+    
+    // this.getSingleRef(id);
+  }
+
+  async getDocId() {
+    const docRef = await addDoc(this.getGameRef(), this.game.toJson());
+    console.log("Document written with ID: ", docRef.id);
+    let id = docRef.id;
+    this.id = id;
+  }
+
+  getGameRef() {
+    return collection(this.firestore, 'games');
+  }
+
+  getSingleRef(docId: string) {
+    return doc(this.getGameRef(), docId)
+  }
+
 
   takeCard() {
     if (this.game.players.length <= 1) {

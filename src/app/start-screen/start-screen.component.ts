@@ -1,50 +1,54 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, Injectable, inject } from '@angular/core';
 import { Firestore, addDoc, collection, onSnapshot } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { Game } from '../models/game';
 import { AppComponent } from '../app.component';
 import { Subscriber, subscribeOn } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+
+@Injectable({
+  providedIn: 'root'
+})
 
 @Component({
   selector: 'app-start-screen',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, AppComponent],
   templateUrl: './start-screen.component.html',
   styleUrl: './start-screen.component.scss'
 })
 export class StartScreenComponent {
-  // firestore: Firestore = inject(Firestore);
+  firestore: Firestore = inject(Firestore);
+
+  firebaseConfig = {
+    apiKey: "AIzaSyBwROdp_C6WT7L1_A1lZWMlIZZdo2DHbjQ",
+    authDomain: "ring-of-fire-550d8.firebaseapp.com",
+    projectId: "ring-of-fire-550d8",
+    storageBucket: "ring-of-fire-550d8.appspot.com",
+    messagingSenderId: "473679845887",
+    appId: "1:473679845887:web:00398626716a705effafca"
+  };
 
   public game: Game = new Game();
   docReference:string = '';
   
-  constructor(private firestore: Firestore, private router: Router) {
+  constructor(private router: Router) {
 
   }
 
   init() {
     this.game = new Game();
-    // this.firestore.subscribe()
-    // this.getGameRef().subscribe();
-    // .subscribe((game:any) => {
-    //   this.game.currentPlayer = game.currentPlayer;
-    //   this.game.stack = game.stack;
-    //   this.game.playedCards = game.playedCards;
-    //   this.game.players = game.players;
-    // });
   }
 
 
   ngOnDestroy(): void {
-    this.getGameSnapshot();
-    this.addItem();
+    // this.getGameSnapshot();
+    // this.addItem();
   }
 
   ngOnInit(): void {
-    this.init();
-    this.addItem();
-    
+    this.getGameRef();
   }
 
   getGameSnapshot() {
@@ -71,7 +75,13 @@ export class StartScreenComponent {
     
   }
 
-  showGameScreen() {
+  async showGameScreen() {
+    // 1. Neues game 
+    this.init();
+    await this.addItem();
+    // 1.1 Echtzeitdaten abrufen (vllt in GameScreen)
+
+    // 2. Link mit ID-Kennung weiterleiten
     this.router.navigateByUrl('/game/' + this.docReference);
   }
 
