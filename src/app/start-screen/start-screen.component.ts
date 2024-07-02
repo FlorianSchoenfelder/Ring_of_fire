@@ -6,6 +6,7 @@ import { Game } from '../models/game';
 import { AppComponent } from '../app.component';
 import { Subscriber, subscribeOn } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { GameScreenComponent } from '../game-screen/game-screen.component';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +34,7 @@ export class StartScreenComponent {
   public game: Game = new Game();
   docReference:string = '';
   
-  constructor(private router: Router) {
+  constructor(private router: Router, private gameScreen: GameScreenComponent) {
 
   }
 

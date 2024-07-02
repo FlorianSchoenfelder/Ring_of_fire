@@ -21,13 +21,13 @@ import { GameInformationsComponent } from '../game-informations/game-information
 import { AppComponent } from '../app.component';
 import { Firestore, addDoc, collection, doc, onSnapshot } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
-import { retry } from 'rxjs';
+import { retry, subscribeOn } from 'rxjs';
 import { StartScreenComponent } from '../start-screen/start-screen.component';
 
 @Component({
   selector: 'app-game-screen',
   standalone: true,
-  imports: [CommonModule,AppComponent,
+  imports: [CommonModule, AppComponent,
     PlayerScreenComponent,
     MatFormFieldModule,
     MatInputModule,
@@ -51,32 +51,39 @@ import { StartScreenComponent } from '../start-screen/start-screen.component';
 })
 
 export class GameScreenComponent {
+  firestore: Firestore = inject(Firestore);
+
   pickCardAnimation = false;
   currentCard: string = '';
   public game: Game = new Game();
   currentSymbol: string = '';
   placedCard: string = '';
   placedCardSymbol: string = '';
-  firestore: Firestore = inject(Firestore);
-  id:string = '';
+  refId: string = '';
 
-  constructor( private dialog: MatDialog, private route: ActivatedRoute, private startScreen: StartScreenComponent) {
-    // this.init();
+  constructor(private dialog: MatDialog, private route: ActivatedRoute) {
   }
 
   async ngOnInit() {
-    await this.getDocId();
-    console.log(this.id);
-    
-    // this.getSingleRef(id);
+    this.route.params.subscribe((params) => {
+      console.log(params['id']);
+      let ident = params['id'];
+      // doc(this.getGameRef(), params['id']);
+      this.snapShot(ident);
+      this.game.currentPlayer = this.game.currentPlayer;
+      this.game.players = this.game.players;
+      this.game.stack = this.game.stack;
+      this.game.playedCards = this.game.playedCards;
+
+      
+    });
+
   }
 
-  async getDocId() {
-    const docRef = await addDoc(this.getGameRef(), this.game.toJson());
-    console.log("Document written with ID: ", docRef.id);
-    let id = docRef.id;
-    this.id = id;
+  snapShot(docId: string) {
+    return doc(collection(this.firestore, docId))
   }
+
 
   getGameRef() {
     return collection(this.firestore, 'games');
@@ -85,6 +92,13 @@ export class GameScreenComponent {
   getSingleRef(docId: string) {
     return doc(this.getGameRef(), docId)
   }
+
+
+
+
+
+
+
 
 
   takeCard() {
