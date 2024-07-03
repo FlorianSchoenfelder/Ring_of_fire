@@ -78,7 +78,8 @@ export class GameScreenComponent {
       console.log(" Game update: ", game.data());
       let datas = game.data();
       console.log(datas.players);
-
+      console.log(datas.currentPlayer);
+      
       this.game.currentPlayer = datas.currentplayer;
       this.game.players = datas.players;
       this.game.stack = datas.stack;
@@ -109,8 +110,13 @@ export class GameScreenComponent {
     return {
       players: game.players,
       stack: game.stack,
-      playedCards: game.playedCards || [],
-      currentPlayer: game.currentPlayer || [],
+      currentCard: game.currentCard,
+      pickCardAnimation: game.pickCardAnimation,
+      currentSymbol: game.currentSymbol,
+      placedCard: game.placedCard,
+      placedCardSymbol: game.placedCardSymbol,
+      playedCards: game.playedCards ||[],
+      currentPlayer: game.currentPlayer || Number,
       
     }
   }
@@ -130,17 +136,18 @@ export class GameScreenComponent {
         this.game.pickCardAnimation = true;
         this.game.currentCard = lastCard;
         this.splitCardName();
-        console.log(this.game.pickCardAnimation);
+        // console.log(this.game.currentPlayer);
         
 
         this.game.currentPlayer++;
+        console.log(this.game.currentPlayer);
         this.game.currentPlayer = this.game.currentPlayer % this.game.players.length;
         this.saveGame(this.game);
         setTimeout(() => {
           this.game.playedCards.push(lastCard);
           this.game.pickCardAnimation = false;
           this.saveGame(this.game);
-          console.log(this.game.pickCardAnimation);
+          // console.log(this.game.currentPlayer);
           
         }, 1250);
       }
@@ -178,7 +185,7 @@ export class GameScreenComponent {
     if (window.innerWidth < 700) {
       return `${8 + (index * 55)}px`;
     } else {
-      return `${130 + (index * 80)}px`;
+      return `${0 + (index * 80)}px`;
     }
   }
 }

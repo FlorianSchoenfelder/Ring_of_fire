@@ -10,10 +10,18 @@
   justify-content: center;
   flex-direction: column;
   align-items: center;
-
+  position: relative;
+  overflow: hidden;
   .headlingImg {
     height: 150px;
     width: 650px;
+    @media (max-width: 600px) {
+      width: 400px;
+    }
+    @media (max-width: 380px) {
+      width: 350px;
+      height: 100px;
+    }
   }
 
   .custom-button {
@@ -39,9 +47,23 @@
       transform: translateY(2px);
       box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
     }
+    @media (max-width: 380px) {
+      width: 180px;
+      padding: 15px 20px;
+      font-size: 14px;
+      top: 55%;
+    }
   }
 }
 
 .startScreenImg {
   height: 70vh;
+  @media (max-width: 600px) {
+    height: 50vh;
+    width: 600px;
+  }
+  @media (max-width: 380px) {
+    height: 40vh;
+    width: 350px;
+  }
 }
