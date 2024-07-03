@@ -23,17 +23,9 @@ import { collection, addDoc } from "firebase/firestore";
 })
 
 export class AppComponent {
-
-  
   title = 'ringoffire';
-
-  
-
-  
 
   constructor() {
     
-  }
-
- 
+  } 
 }

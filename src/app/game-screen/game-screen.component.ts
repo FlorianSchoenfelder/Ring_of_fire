@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Injectable, inject } from '@angular/core';
+import { Component, Injectable, NgModuleRef, inject } from '@angular/core';
 import { Game } from '../models/game';
 import { PlayerScreenComponent } from '../player-screen/player-screen.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,7 +19,7 @@ import {
 import { DialogAddPlayerComponent } from '../dialog-add-player/dialog-add-player.component';
 import { GameInformationsComponent } from '../game-informations/game-informations.component';
 import { AppComponent } from '../app.component';
-import { Firestore, addDoc, collection, doc, onSnapshot } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, doc, onSnapshot, updateDoc } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
 import { retry, subscribeOn } from 'rxjs';
 import { StartScreenComponent } from '../start-screen/start-screen.component';
@@ -48,57 +48,72 @@ import { StartScreenComponent } from '../start-screen/start-screen.component';
 
 @Injectable({
   providedIn: 'root',
+
 })
+
+
 
 export class GameScreenComponent {
   firestore: Firestore = inject(Firestore);
 
-  pickCardAnimation = false;
-  currentCard: string = '';
+
   public game: Game = new Game();
-  currentSymbol: string = '';
-  placedCard: string = '';
-  placedCardSymbol: string = '';
+  
   refId: string = '';
 
   constructor(private dialog: MatDialog, private route: ActivatedRoute) {
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.route.params.subscribe((params) => {
       console.log(params['id']);
       let ident = params['id'];
-      // doc(this.getGameRef(), params['id']);
+      this.refId = params['id'];
       this.snapShot(ident);
-      this.game.currentPlayer = this.game.currentPlayer;
-      this.game.players = this.game.players;
-      this.game.stack = this.game.stack;
-      this.game.playedCards = this.game.playedCards;
-
-      
     });
-
   }
 
   snapShot(docId: string) {
-    return doc(collection(this.firestore, docId))
+    return onSnapshot(doc(this.firestore, "games", docId), (game: any) => {
+      console.log(" Game update: ", game.data());
+      let datas = game.data();
+      console.log(datas.players);
+
+      this.game.currentPlayer = datas.currentplayer;
+      this.game.players = datas.players;
+      this.game.stack = datas.stack;
+      this.game.playedCards = datas.playedCards;
+      this.game.currentCard = datas.currentCard;
+      this.game.pickCardAnimation = datas.pickCardAnimation;
+      this.game.currentSymbol = datas.currentSymbol;
+      this.game.placedCard = datas.placedCard;
+      this.game.placedCardSymbol = datas.placedCardSymbol;
+    });
   }
 
+  async saveGame(game:Game) {
+    let docRef = doc(this.firestore, "games", this.refId);
+    await updateDoc(docRef, this.toJson(game));
+  }
 
   getGameRef() {
-    return collection(this.firestore, 'games');
+    return collection(this.firestore, 'games')
+  }
+  getSingleRef() {
+    return doc(collection(this.firestore, 'games'))
   }
 
-  getSingleRef(docId: string) {
-    return doc(this.getGameRef(), docId)
+
+
+  toJson(game:Game) {
+    return {
+      players: game.players,
+      stack: game.stack,
+      playedCards: game.playedCards || [],
+      currentPlayer: game.currentPlayer || [],
+      
+    }
   }
-
-
-
-
-
-
-
 
 
   takeCard() {
@@ -106,45 +121,56 @@ export class GameScreenComponent {
       this.openDialog();
     }
     else {
-      if (!this.pickCardAnimation) {
+      if (!this.game.pickCardAnimation) {
         let lastCard = this.game.stack.pop();
+        
         if (!lastCard) {
           return; // Funktion beendet
         }
-        this.pickCardAnimation = true;
-        this.currentCard = lastCard;
+        this.game.pickCardAnimation = true;
+        this.game.currentCard = lastCard;
         this.splitCardName();
+        console.log(this.game.pickCardAnimation);
+        
 
         this.game.currentPlayer++;
         this.game.currentPlayer = this.game.currentPlayer % this.game.players.length;
+        this.saveGame(this.game);
         setTimeout(() => {
-          this.game.playedCards.push(this.currentCard);
-          this.pickCardAnimation = false;
+          this.game.playedCards.push(lastCard);
+          this.game.pickCardAnimation = false;
+          this.saveGame(this.game);
+          console.log(this.game.pickCardAnimation);
+          
         }, 1250);
       }
     }
   }
 
   splitCardName() {
-    let parts = this.currentCard.split('_');
-    this.currentSymbol = parts[0];
+    let parts = this.game.currentCard.split('_');
+    this.game.currentSymbol = parts[0];
   }
 
   getCardImage(card: string) {
     let parts = card.split('_');
-    this.placedCardSymbol = parts[0];
-    return `./assets/img/cards/${this.placedCardSymbol}/${card}.png`
+    this.game.placedCardSymbol = parts[0];
+    return `./assets/img/cards/${this.game.placedCardSymbol}/${card}.png`
   }
 
-  openDialog(): void {
+  async openDialog() {
     const dialogRef = this.dialog.open(DialogAddPlayerComponent);
 
     dialogRef.afterClosed().subscribe(name => {
       if (!name) {
         return;
       }
+
       this.game.players.push(name);
+      this.saveGame(this.game);
+      
     });
+
   }
 
 

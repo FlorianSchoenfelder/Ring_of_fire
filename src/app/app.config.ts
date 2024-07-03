@@ -11,3 +11,4 @@ export const appConfig: ApplicationConfig = {
      provideFirebaseApp(() => initializeApp({"projectId":"ring-of-fire-550d8","appId":"1:473679845887:web:00398626716a705effafca","storageBucket":"ring-of-fire-550d8.appspot.com","apiKey":"AIzaSyBwROdp_C6WT7L1_A1lZWMlIZZdo2DHbjQ","authDomain":"ring-of-fire-550d8.firebaseapp.com","messagingSenderId":"473679845887"})),
       provideFirestore(() => getFirestore())]
 };
+

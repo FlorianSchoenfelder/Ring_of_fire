@@ -20,14 +20,14 @@
             [src]="getCardImage(card)" alt="">
 
         <!-- Current card (Animation)-->
-        <img (click)="takeCard()" *ngIf="pickCardAnimation" class="pick-card no-border" style="right: 40px;"
-            src="./assets/img/cards/{{ currentSymbol }}/{{ currentCard }}.png">
-
+        <img (click)="takeCard()" *ngIf="game.pickCardAnimation" class="pick-card no-border" style="right: 40px;"
+            src="./assets/img/cards/{{ game.currentSymbol }}/{{ game.currentCard }}.png">
+        
 
     </div>
 
 
-    <app-game-informations [card]="currentCard" class="informations"></app-game-informations>
+    <app-game-informations [card]="game.currentCard" class="informations"></app-game-informations>
 
     <button (click)="openDialog()" class="btn-add" mat-fab color="primary"
         aria-label="Example icon button with a delete icon">
