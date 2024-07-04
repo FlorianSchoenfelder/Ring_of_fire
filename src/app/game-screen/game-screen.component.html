@@ -1,12 +1,17 @@
-<div class="player-screen-container">
-    <app-player-screen *ngFor="let player of game.players; let i = index" class="player-container"
+<div *ngIf="!gameEnd" class="player-screen-container">
+    <app-player-screen (click)="editPlayer(i)" *ngFor="let player of game.players; let i = index" class="player-container"
         [ngStyle]="{'top': getTopPosition(i)}" [playerActive]="i == game.currentPlayer"
+        [image]="[game.players_Logo[i]]"
         [name]="player"></app-player-screen>
 </div>
 
 
+<div *ngIf="gameEnd" class="newGameScreen">
+    <h1>Game over</h1>
+    <button (click)="restartGame()" class="newGameButton">Start new Game</button>
+</div>
 
-<div class="gameScreen">
+<div *ngIf="!gameEnd" class="gameScreen">
     <div class="card-stack">
 
         <!-- Card stack-->

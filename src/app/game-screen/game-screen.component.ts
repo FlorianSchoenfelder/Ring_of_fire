@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Injectable, NgModuleRef, inject } from '@angular/core';
+import { Component, ComponentRef, Injectable, NgModuleRef, inject } from '@angular/core';
 import { Game } from '../models/game';
 import { PlayerScreenComponent } from '../player-screen/player-screen.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,9 +20,10 @@ import { DialogAddPlayerComponent } from '../dialog-add-player/dialog-add-player
 import { GameInformationsComponent } from '../game-informations/game-informations.component';
 import { AppComponent } from '../app.component';
 import { Firestore, addDoc, collection, doc, onSnapshot, updateDoc } from '@angular/fire/firestore';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { retry, subscribeOn } from 'rxjs';
 import { StartScreenComponent } from '../start-screen/start-screen.component';
+import { EditPlayerComponent } from '../edit-player/edit-player.component';
 
 @Component({
   selector: 'app-game-screen',
@@ -40,7 +41,7 @@ import { StartScreenComponent } from '../start-screen/start-screen.component';
     MatIconModule,
     MatDialogModule,
     GameInformationsComponent,
-    StartScreenComponent
+    StartScreenComponent,
   ],
   templateUrl: './game-screen.component.html',
   styleUrl: './game-screen.component.scss'
@@ -56,12 +57,13 @@ import { StartScreenComponent } from '../start-screen/start-screen.component';
 export class GameScreenComponent {
   firestore: Firestore = inject(Firestore);
 
-
+  // start: StartScreenComponent = inject(StartScreenComponent);
   public game: Game = new Game();
-  
+  gameEnd: boolean = false;
   refId: string = '';
+  newDocRef: string = '';
 
-  constructor(private dialog: MatDialog, private route: ActivatedRoute) {
+  constructor(private dialog: MatDialog, private route: ActivatedRoute, private router: Router) {
   }
 
   ngOnInit() {
@@ -80,7 +82,7 @@ export class GameScreenComponent {
       console.log(datas.players);
       console.log(datas.currentPlayer);
       
-      this.game.currentPlayer = datas.currentplayer;
+      this.game.currentPlayer = datas.currentPlayer;
       this.game.players = datas.players;
       this.game.stack = datas.stack;
       this.game.playedCards = datas.playedCards;
@@ -89,6 +91,7 @@ export class GameScreenComponent {
       this.game.currentSymbol = datas.currentSymbol;
       this.game.placedCard = datas.placedCard;
       this.game.placedCardSymbol = datas.placedCardSymbol;
+      this.game.players_Logo = datas.players_Logo;
     });
   }
 
@@ -116,7 +119,8 @@ export class GameScreenComponent {
       placedCard: game.placedCard,
       placedCardSymbol: game.placedCardSymbol,
       playedCards: game.playedCards ||[],
-      currentPlayer: game.currentPlayer || Number,
+      currentPlayer: game.currentPlayer,
+      players_Logo: game.players_Logo,
       
     }
   }
@@ -131,7 +135,10 @@ export class GameScreenComponent {
         let lastCard = this.game.stack.pop();
         
         if (!lastCard) {
+          console.log('Game ended');
+          this.gameEnd = true;
           return; // Funktion beendet
+          
         }
         this.game.pickCardAnimation = true;
         this.game.currentCard = lastCard;
@@ -165,7 +172,7 @@ export class GameScreenComponent {
     return `./assets/img/cards/${this.game.placedCardSymbol}/${card}.png`
   }
 
-  async openDialog() {
+  openDialog() {
     const dialogRef = this.dialog.open(DialogAddPlayerComponent);
 
     dialogRef.afterClosed().subscribe(name => {
@@ -174,6 +181,7 @@ export class GameScreenComponent {
       }
 
       this.game.players.push(name);
+      this.game.players_Logo.push('playerLogo.png');
       this.saveGame(this.game);
       
     });
@@ -187,5 +195,39 @@ export class GameScreenComponent {
     } else {
       return `${0 + (index * 80)}px`;
     }
+  }
+
+  editPlayer(index:number) {
+    console.log('player', index, 'clicked');
+    const dialogRef = this.dialog.open(EditPlayerComponent);
+
+    dialogRef.afterClosed().subscribe(change => {
+      if (change) {
+        if (change == 'DELETE') {
+          this.game.players.splice(index,1)
+        }else {
+          this.game.players_Logo[index] = change;
+        }
+      
+      this.saveGame(this.game);
+      }     
+    });
+  }
+
+  async restartGame() {
+    this.game = new Game();
+    await this.addItem();
+    this.gameEnd = false;
+    this.router.navigateByUrl('/game/' + this.newDocRef);
+  }
+
+  async addItem() {
+    if (!this.game) {
+      return
+    }
+    const docRef = await addDoc(this.getGameRef(), this.game.toJson());
+    console.log("Document written with ID: ", docRef.id);
+    let id = docRef.id;
+    this.newDocRef = id;
   }
 }
